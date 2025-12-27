@@ -12,16 +12,10 @@ interface KPICardProps {
 }
 
 const variantStyles = {
-  default: 'bg-card border-border',
-  danger: 'bg-destructive/10 border-destructive/20',
-  warning: 'bg-chart-1/10 border-chart-1/20',
-  success: 'bg-chart-5/10 border-chart-5/20',
-};
-
-const trendColors = {
-  up: 'text-chart-5',
-  down: 'text-destructive',
-  stable: 'text-muted-foreground',
+  default: 'bg-card border-border hover:shadow-md',
+  danger: 'bg-destructive/5 border-destructive/20 text-destructive hover:shadow-destructive/10',
+  warning: 'bg-amber-500/5 border-amber-500/20 text-amber-600 hover:shadow-amber-500/10',
+  success: 'bg-emerald-500/5 border-emerald-500/20 text-emerald-600 hover:shadow-emerald-500/10',
 };
 
 export function KPICard({ 
@@ -35,24 +29,33 @@ export function KPICard({
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
 
   return (
-    <Card className={cn("border", variantStyles[variant])}>
+    <Card className={cn(
+      "transition-all duration-300 transform hover:-translate-y-1",
+      variantStyles[variant]
+    )}>
       <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <p className="text-3xl font-bold text-foreground">{value}</p>
-            {change !== undefined && (
-              <div className={cn("flex items-center gap-1 text-sm", trendColors[trend])}>
-                <TrendIcon className="h-4 w-4" />
-                <span>{change > 0 ? '+' : ''}{change}%</span>
-              </div>
-            )}
-          </div>
-          {icon && (
-            <div className="text-muted-foreground">
-              {icon}
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">{value}</h2>
+              {change !== undefined && (
+                <div className={cn(
+                  "flex items-center gap-0.5 text-xs font-medium px-1.5 py-0.5 rounded-full bg-background/50 border",
+                  trend === 'up' ? "text-emerald-600 border-emerald-200" : trend === 'down' ? "text-destructive border-destructive/20" : "text-muted-foreground border-border"
+                )}>
+                  <TrendIcon className="h-3 w-3" />
+                  <span>{change > 0 ? '+' : ''}{change}%</span>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+          <div className={cn(
+            "p-3 rounded-xl transition-colors",
+            variant === 'default' ? "bg-muted/10 text-muted-foreground" : "bg-current/10"
+          )}>
+            {icon}
+          </div>
         </div>
       </CardContent>
     </Card>
