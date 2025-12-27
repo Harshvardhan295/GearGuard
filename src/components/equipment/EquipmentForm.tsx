@@ -1,173 +1,58 @@
+//
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { mockCategories, mockTeams, mockUsers, mockWorkCenters } from "@/data/mockData";
-import { useState } from "react";
+import { Wrench, History } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { mockMaintenanceRequests } from "@/data/mockData";
 
-interface EquipmentFormProps {
-  onSubmit?: (data: any) => void;
-  onCancel?: () => void;
-}
-
-export function EquipmentForm({ onSubmit, onCancel }: EquipmentFormProps) {
-  const [usedBy, setUsedBy] = useState<'employee' | 'department'>('employee');
+export function EquipmentForm({ equipmentId, onCancel }: any) {
+  const requestCount = mockMaintenanceRequests.filter(r => r.equipmentId === equipmentId && r.status !== 'repaired').length;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Equipment Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Enter equipment name" />
-          </div>
-          <div className="space-y-2">
-            <Label>Equipment Category</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {mockCategories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="serialNumber">Serial Number</Label>
-            <Input id="serialNumber" placeholder="Enter serial number" />
-          </div>
-          <div className="space-y-2">
-            <Label>Company</Label>
-            <Input value="My Company (San Francisco)" disabled />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Used By</Label>
-          <RadioGroup 
-            value={usedBy} 
-            onValueChange={(v) => setUsedBy(v as 'employee' | 'department')}
-            className="flex gap-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="employee" id="employee" />
-              <Label htmlFor="employee" className="cursor-pointer">Employee</Label>
+    <div className="space-y-6">
+      {/* Smart Buttons Section */}
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" className="h-14 px-6 gap-3 border-dashed">
+          <Wrench className="h-5 w-5 text-primary" />
+          <div className="text-left">
+            <div className="text-xs text-muted-foreground font-semibold">Maintenance</div>
+            <div className="font-bold flex items-center gap-2">
+              All Requests <Badge className="bg-primary text-[10px] h-4">{requestCount}</Badge>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="department" id="department" />
-              <Label htmlFor="department" className="cursor-pointer">Department</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {usedBy === 'employee' ? (
-            <div className="space-y-2">
-              <Label>Employee</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select employee" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mockUsers.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Input id="department" placeholder="Enter department name" />
-            </div>
-          )}
-          <div className="space-y-2">
-            <Label>Maintenance Team</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select team" />
-              </SelectTrigger>
-              <SelectContent>
-                {mockTeams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>{team.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
-        </div>
+        </Button>
+        <Button variant="outline" className="h-14 px-6 gap-3 border-dashed">
+          <History className="h-5 w-5 text-muted-foreground" />
+          <div className="text-left">
+            <div className="text-xs text-muted-foreground font-semibold">Work Logs</div>
+            <div className="font-bold">History</div>
+          </div>
+        </Button>
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+      <Card>
+        <CardHeader><CardTitle>Asset Information</CardTitle></CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label>Technician</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select technician" />
-              </SelectTrigger>
-              <SelectContent>
-                {mockUsers.filter(u => u.role === 'technician' || u.role === 'admin').map((user) => (
-                  <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label>Serial Number</Label>
+            <Input placeholder="SN-2025-XXXX" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="assignedDate">Assigned Date</Label>
-            <Input id="assignedDate" type="date" />
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="location">Used in Location</Label>
-            <Input id="location" placeholder="Enter location" />
+            <Label>Warranty Information</Label>
+            <Input placeholder="e.g. 3 Years Global" />
           </div>
           <div className="space-y-2">
-            <Label>Work Center</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select work center" />
-              </SelectTrigger>
-              <SelectContent>
-                {mockWorkCenters.map((wc) => (
-                  <SelectItem key={wc.id} value={wc.id}>{wc.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label>Purchase Date</Label>
+            <Input type="date" />
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="scrapDate">Scrap Date</Label>
-          <Input id="scrapDate" type="date" />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Textarea id="description" placeholder="Enter equipment description..." rows={4} />
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={onCancel}>Cancel</Button>
-          <Button onClick={() => onSubmit?.({})}>Save Equipment</Button>
-        </div>
-      </CardContent>
-    </Card>
+          <div className="space-y-2">
+            <Label>Physical Location</Label>
+            <Input placeholder="Building B, Floor 2" />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

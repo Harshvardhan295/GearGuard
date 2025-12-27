@@ -6,9 +6,9 @@ export interface User {
   email: string;
   name: string;
   role: AppRole;
+  avatar?: string;
 }
 
-// Maintenance Types
 export type MaintenanceStatus = 'new' | 'in_progress' | 'repaired' | 'scrap';
 export type MaintenanceType = 'corrective' | 'preventive';
 export type Priority = 0 | 1 | 2 | 3;
@@ -23,30 +23,24 @@ export interface MaintenanceRequest {
   teamId: string;
   technicianId: string;
   scheduledDate: Date;
-  duration: number; // in hours
+  duration: number; 
   priority: Priority;
   status: MaintenanceStatus;
   notes?: string;
-  instructions?: string;
   createdAt: Date;
-  updatedAt: Date;
 }
 
-// Equipment Types
 export interface Equipment {
   id: string;
   name: string;
   categoryId: string;
   serialNumber?: string;
-  employeeId?: string;
-  departmentId?: string;
-  technicianId?: string;
+  purchaseDate?: string; // New field
+  warrantyInfo?: string; // New field
   maintenanceTeamId?: string;
-  assignedDate?: Date;
-  scrapDate?: Date;
+  technicianId?: string;
+  isScrapped?: boolean; // Scrap Logic Flag
   location?: string;
-  workCenterId?: string;
-  description?: string;
 }
 
 export interface EquipmentCategory {
